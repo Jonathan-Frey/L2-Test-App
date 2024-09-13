@@ -58,28 +58,31 @@ export default class Cat extends GameObject {
   }
 
   protected override process(delta: number) {
+    const speed = 1000;
+    const diagonal = (delta / 1000) * (speed / Math.sqrt(2));
+    const straight = (delta / 1000) * speed;
     if (this.#left && this.#up) {
-      this.#x -= 20 / Math.sqrt(2);
-      this.#y -= 20 / Math.sqrt(2);
+      this.#x -= diagonal;
+      this.#y -= diagonal;
     } else if (this.#left && this.#down) {
-      this.#x -= 20 / Math.sqrt(2);
-      this.#y += 20 / Math.sqrt(2);
+      this.#x -= diagonal;
+      this.#y += diagonal;
     } else if (this.#right && this.#up) {
-      this.#x += 20 / Math.sqrt(2);
-      this.#y -= 20 / Math.sqrt(2);
+      this.#x += diagonal;
+      this.#y -= diagonal;
     } else if (this.#right && this.#down) {
-      this.#x += 20 / Math.sqrt(2);
-      this.#y += 20 / Math.sqrt(2);
+      this.#x += diagonal;
+      this.#y += diagonal;
     } else if (this.#left && this.#right) {
     } else if (this.#up && this.#down) {
     } else if (this.#left) {
-      this.#x -= 20;
+      this.#x -= straight;
     } else if (this.#up) {
-      this.#y -= 20;
+      this.#y -= straight;
     } else if (this.#right) {
-      this.#x += 20;
+      this.#x += straight;
     } else if (this.#down) {
-      this.#y += 20;
+      this.#y += straight;
     }
   }
 
