@@ -34,6 +34,10 @@ export default class Cat extends GameObject {
         case " ":
           console.log("meow");
           break;
+        case "Enter":
+          const cat3 = new Cat(150, 150, "Crippa", "black");
+          this.navigateTo(cat3);
+          break;
         default:
           break;
       }
