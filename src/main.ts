@@ -9,10 +9,10 @@ canvas.addEventListener("dblclick", () => {
   canvas.requestFullscreen();
 });
 
-const gameEngine = new GameEngine(canvas);
+const gameEngine = new GameEngine(canvas, { debug: true });
 const cat = new Cat(50, 50, "Dino", "orange");
-cat.addEventListener("click", () => {
-  console.log("meow");
-});
+const cat2 = new Cat(100, 100, "Siv", "gray");
+cat.addChild(cat2);
 gameEngine.addGameObject(cat);
+
 gameEngine.start();
