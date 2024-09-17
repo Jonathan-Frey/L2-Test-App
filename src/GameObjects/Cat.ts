@@ -1,5 +1,5 @@
-import { GameObject, Vector2D } from "jf-canvas-game-engine";
-import { CatNecklace } from "./CatNecklace";
+import { CameraContext, GameObject, Vector2D } from "jf-canvas-game-engine";
+import CatNecklace from "./CatNecklace";
 
 export default class Cat extends GameObject {
   #name: string;
@@ -68,7 +68,8 @@ export default class Cat extends GameObject {
     );
   }
 
-  override process(delta: number) {
+  process(delta: number) {
+    super.process(delta);
     const speed = 1000;
     if (this.#up) {
       this.#velocity = this.#velocity.add(new Vector2D(0, -speed));
@@ -84,12 +85,14 @@ export default class Cat extends GameObject {
     }
 
     this.position = this.position.add(this.#velocity.multiply(delta / 1000));
+    const camera = CameraContext.getInstance().getCamera();
+    camera?.centerOn(this.position);
     this.#velocity = new Vector2D(0, 0);
   }
 
-  render(delta: number, ctx: CanvasRenderingContext2D) {
+  render(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.#color;
     ctx.fillRect(this.position.x, this.position.y, 50, 50);
-    super.render(delta, ctx);
+    super.render(ctx);
   }
 }

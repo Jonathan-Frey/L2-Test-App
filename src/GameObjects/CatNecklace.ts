@@ -1,6 +1,6 @@
 import { GameObject, Vector2D } from "jf-canvas-game-engine";
 
-export class CatNecklace extends GameObject {
+export default class CatNecklace extends GameObject {
   #color: string;
   constructor(color: string, position?: Vector2D) {
     super();
@@ -12,7 +12,7 @@ export class CatNecklace extends GameObject {
     }
   }
 
-  render(delta: number, ctx: CanvasRenderingContext2D) {
+  render(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.#color;
     ctx.fillRect(this.position.x, this.position.y, 50, 5);
   }
