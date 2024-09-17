@@ -1,4 +1,4 @@
-import Cat from "./gameObjects/Cat";
+import { Level1 } from "./scenes/Level1";
 import "./style.css";
 import GameEngine from "jf-canvas-game-engine";
 
@@ -9,10 +9,8 @@ canvas.addEventListener("dblclick", () => {
   canvas.requestFullscreen();
 });
 
-const cat = new Cat(50, 50, "Dino", "orange");
-const cat2 = new Cat(100, 100, "Siv", "gray");
-cat.addChild(cat2);
+const level1 = new Level1();
 
-const gameEngine = new GameEngine(canvas, cat, { debug: true });
+export const gameEngine = new GameEngine(canvas, level1, { debug: true });
 
 gameEngine.start();

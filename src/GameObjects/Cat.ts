@@ -1,22 +1,25 @@
-import { GameObject } from "jf-canvas-game-engine";
+import { GameObject, Vector2D } from "jf-canvas-game-engine";
+import { CatNecklace } from "./CatNecklace";
 
 export default class Cat extends GameObject {
   #name: string;
   #color: string;
   #totalTime: number = 0;
-  #x;
-  #y;
   #left: boolean = false;
   #up: boolean = false;
   #right: boolean = false;
   #down: boolean = false;
+  #velocity = new Vector2D(0, 0);
 
-  constructor(x: number, y: number, name: string, color: string) {
+  constructor(name: string, color: string, position?: Vector2D) {
     super();
     this.#name = name;
     this.#color = color;
-    this.#x = x;
-    this.#y = y;
+    if (position) {
+      this.position = position;
+    } else {
+      this.position = new Vector2D(0, 0);
+    }
     window.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "ArrowLeft":
@@ -35,7 +38,7 @@ export default class Cat extends GameObject {
           console.log("meow");
           break;
         case "Enter":
-          const cat3 = new Cat(150, 150, "Crippa", "black");
+          const cat3 = new Cat("Crippa", "black", new Vector2D(100, 100));
           this.navigateTo(cat3);
           break;
         default:
@@ -59,39 +62,34 @@ export default class Cat extends GameObject {
           break;
       }
     });
+
+    this.addChild(
+      new CatNecklace("red", this.position.add(new Vector2D(0, 20)))
+    );
   }
 
-  protected override process(delta: number) {
+  override process(delta: number) {
     const speed = 1000;
-    const diagonal = (delta / 1000) * (speed / Math.sqrt(2));
-    const straight = (delta / 1000) * speed;
-    if (this.#left && this.#up) {
-      this.#x -= diagonal;
-      this.#y -= diagonal;
-    } else if (this.#left && this.#down) {
-      this.#x -= diagonal;
-      this.#y += diagonal;
-    } else if (this.#right && this.#up) {
-      this.#x += diagonal;
-      this.#y -= diagonal;
-    } else if (this.#right && this.#down) {
-      this.#x += diagonal;
-      this.#y += diagonal;
-    } else if (this.#left && this.#right) {
-    } else if (this.#up && this.#down) {
-    } else if (this.#left) {
-      this.#x -= straight;
-    } else if (this.#up) {
-      this.#y -= straight;
-    } else if (this.#right) {
-      this.#x += straight;
-    } else if (this.#down) {
-      this.#y += straight;
+    if (this.#up) {
+      this.#velocity = this.#velocity.add(new Vector2D(0, -speed));
     }
+    if (this.#down) {
+      this.#velocity = this.#velocity.add(new Vector2D(0, speed));
+    }
+    if (this.#left) {
+      this.#velocity = this.#velocity.add(new Vector2D(-speed, 0));
+    }
+    if (this.#right) {
+      this.#velocity = this.#velocity.add(new Vector2D(speed, 0));
+    }
+
+    this.position = this.position.add(this.#velocity.multiply(delta / 1000));
+    this.#velocity = new Vector2D(0, 0);
   }
 
-  protected override render(delta: number, ctx: CanvasRenderingContext2D) {
+  render(delta: number, ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.#color;
-    ctx.fillRect(this.#x, this.#y, 50, 50);
+    ctx.fillRect(this.position.x, this.position.y, 50, 50);
+    super.render(delta, ctx);
   }
 }
