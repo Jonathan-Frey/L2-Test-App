@@ -69,7 +69,6 @@ export default class Cat extends GameObject {
   }
 
   process(delta: number) {
-    super.process(delta);
     const speed = 1000;
     if (this.#up) {
       this.#velocity = this.#velocity.add(new Vector2D(0, -speed));
@@ -93,6 +92,5 @@ export default class Cat extends GameObject {
   render(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.#color;
     ctx.fillRect(this.position.x, this.position.y, 50, 50);
-    super.render(ctx);
   }
 }
