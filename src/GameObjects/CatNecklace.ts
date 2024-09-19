@@ -14,6 +14,6 @@ export default class CatNecklace extends GameObject {
 
   render(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.#color;
-    ctx.fillRect(this.position.x, this.position.y, 50, 5);
+    ctx.fillRect(this.globalPosition.x, this.globalPosition.y, 50, 5);
   }
 }

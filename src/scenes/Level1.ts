@@ -1,9 +1,8 @@
 import {
   BorderOptions,
-  FixedGameObject,
   GameObject,
   Rectangle,
-  UiCard,
+  Panel,
   Vector2D,
 } from "jf-canvas-game-engine";
 import Cat from "../gameObjects/Cat";
@@ -12,22 +11,25 @@ export class Level1 extends GameObject {
   constructor() {
     super();
     this.addChild(new Rectangle(1000, 1000, "red"));
-    this.addChild(new Cat("Dino", "orange", new Vector2D(100, 100)));
-    const ui1 = new UiCard(
+    const cat1 = new Cat("Dino", "orange", false, new Vector2D(100, 100));
+    this.addChild(cat1);
+    const ui1 = new Panel(
       50,
       50,
       "yellow",
       new BorderOptions("black", 2, 5),
+      true,
       new Vector2D(10, 10)
     );
     this.addChild(ui1);
-    const ui2 = new UiCard(
+    const ui2 = new Panel(
+      100,
       50,
-      50,
-      "green",
+      "blue",
       new BorderOptions("black", 2, 5),
-      new Vector2D(70, 10)
+      false,
+      new Vector2D(0, -70)
     );
-    ui1.addChild(ui2);
+    cat1.addChild(ui2);
   }
 }

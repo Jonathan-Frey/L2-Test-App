@@ -11,15 +11,15 @@ export default class Cat extends GameObject {
   #down: boolean = false;
   #velocity = new Vector2D(0, 0);
 
-  constructor(name: string, color: string, position?: Vector2D) {
-    super();
+  constructor(
+    name: string,
+    color: string,
+    fixed: boolean = false,
+    position: Vector2D = new Vector2D(0, 0)
+  ) {
+    super(fixed, position);
     this.#name = name;
     this.#color = color;
-    if (position) {
-      this.position = position;
-    } else {
-      this.position = new Vector2D(0, 0);
-    }
     window.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "ArrowLeft":
@@ -38,7 +38,12 @@ export default class Cat extends GameObject {
           console.log("meow");
           break;
         case "Enter":
-          const cat3 = new Cat("Crippa", "black", new Vector2D(100, 100));
+          const cat3 = new Cat(
+            "Crippa",
+            "black",
+            false,
+            new Vector2D(100, 100)
+          );
           this.navigateTo(cat3);
           break;
         default:
@@ -63,9 +68,7 @@ export default class Cat extends GameObject {
       }
     });
 
-    this.addChild(
-      new CatNecklace("red", this.position.add(new Vector2D(0, 20)))
-    );
+    this.addChild(new CatNecklace("red", new Vector2D(0, 20)));
   }
 
   process(delta: number) {
@@ -85,12 +88,12 @@ export default class Cat extends GameObject {
 
     this.position = this.position.add(this.#velocity.multiply(delta / 1000));
     const camera = CameraContext.getInstance().getCamera();
-    camera?.centerOn(this.position);
+    camera?.centerOn(this.globalPosition);
     this.#velocity = new Vector2D(0, 0);
   }
 
   render(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.#color;
-    ctx.fillRect(this.position.x, this.position.y, 50, 50);
+    ctx.fillRect(this.globalPosition.x, this.globalPosition.y, 50, 50);
   }
 }
