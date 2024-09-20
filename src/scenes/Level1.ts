@@ -4,6 +4,7 @@ import {
   Rectangle,
   Panel,
   Vector2D,
+  Hitbox,
 } from "jf-canvas-game-engine";
 import Cat from "../gameObjects/Cat";
 
@@ -13,6 +14,15 @@ export class Level1 extends GameObject {
     this.addChild(new Rectangle(1000, 1000, "red"));
     const cat1 = new Cat("Dino", "orange", false, new Vector2D(100, 100));
     this.addChild(cat1);
+    const rectangle = new Rectangle(
+      100,
+      100,
+      "green",
+      false,
+      new Vector2D(200, 200)
+    );
+    rectangle.setHitbox(new Hitbox(new Vector2D(0, 0), 100, 100));
+    this.addChild(rectangle);
     const ui1 = new Panel(
       50,
       50,

@@ -1,4 +1,9 @@
-import { CameraContext, GameObject, Vector2D } from "jf-canvas-game-engine";
+import {
+  CameraContext,
+  GameObject,
+  Hitbox,
+  Vector2D,
+} from "jf-canvas-game-engine";
 import CatNecklace from "./CatNecklace";
 
 export default class Cat extends GameObject {
@@ -20,6 +25,7 @@ export default class Cat extends GameObject {
     super(fixed, position);
     this.#name = name;
     this.#color = color;
+    this.setHitbox(new Hitbox(new Vector2D(0, 0), 50, 50));
     window.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "ArrowLeft":
