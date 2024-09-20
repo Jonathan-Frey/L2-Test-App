@@ -1,15 +1,14 @@
 import {
   CameraContext,
-  GameObject,
-  Hitbox,
+  CollisionBody,
+  RectangleCollisionShape,
   Vector2D,
 } from "jf-canvas-game-engine";
 import CatNecklace from "./CatNecklace";
 
-export default class Cat extends GameObject {
+export default class Cat extends CollisionBody {
   #name: string;
-  #color: string;
-  #totalTime: number = 0;
+  #color: string | CanvasPattern | CanvasGradient;
   #left: boolean = false;
   #up: boolean = false;
   #right: boolean = false;
@@ -17,15 +16,14 @@ export default class Cat extends GameObject {
   #velocity = new Vector2D(0, 0);
 
   constructor(
+    position: Vector2D,
     name: string,
-    color: string,
-    fixed: boolean = false,
-    position: Vector2D = new Vector2D(0, 0)
+    color: string | CanvasPattern | CanvasGradient
   ) {
-    super(fixed, position);
+    super(position, new RectangleCollisionShape(new Vector2D(0, 0), 50, 50));
     this.#name = name;
     this.#color = color;
-    this.setHitbox(new Hitbox(new Vector2D(0, 0), 50, 50));
+
     window.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "ArrowLeft":
@@ -41,16 +39,7 @@ export default class Cat extends GameObject {
           this.#down = true;
           break;
         case " ":
-          console.log("meow");
-          break;
-        case "Enter":
-          const cat3 = new Cat(
-            "Crippa",
-            "black",
-            false,
-            new Vector2D(100, 100)
-          );
-          this.navigateTo(cat3);
+          console.log(`${this.#name} meows`);
           break;
         default:
           break;
@@ -74,7 +63,7 @@ export default class Cat extends GameObject {
       }
     });
 
-    this.addChild(new CatNecklace("red", new Vector2D(0, 20)));
+    this.addChild(new CatNecklace(new Vector2D(0, 20), "red"));
   }
 
   process(delta: number) {
@@ -101,5 +90,9 @@ export default class Cat extends GameObject {
   render(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.#color;
     ctx.fillRect(this.globalPosition.x, this.globalPosition.y, 50, 50);
+  }
+
+  onCollision(other: CollisionBody) {
+    super.onCollision(other);
   }
 }

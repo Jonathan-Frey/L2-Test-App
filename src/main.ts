@@ -1,6 +1,6 @@
 import { Level1 } from "./scenes/Level1";
 import "./style.css";
-import GameEngine from "jf-canvas-game-engine";
+import { GameEngine } from "jf-canvas-game-engine";
 
 const canvas = document.querySelector<HTMLCanvasElement>(
   "canvas"
