@@ -5,9 +5,6 @@ import { GameEngine } from "jf-canvas-game-engine";
 const canvas = document.querySelector<HTMLCanvasElement>(
   "canvas"
 ) as HTMLCanvasElement;
-canvas.addEventListener("dblclick", () => {
-  canvas.requestFullscreen();
-});
 
 const level1 = new Level1();
 

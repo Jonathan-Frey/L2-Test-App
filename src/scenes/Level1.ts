@@ -31,17 +31,6 @@ export class Level1 extends GameObject {
     );
     this.addChild(ui1);
 
-    // Add a UI panel to the cat
-    const ui2 = new Panel(
-      new Vector2D(0, -70),
-      false,
-      100,
-      50,
-      "blue",
-      new BorderOptions("black", 2, 5)
-    );
-    cat1.addChild(ui2);
-
     // Add a box to the scene
     const box = new Box(new Vector2D(200, 200), 50, 50, "green");
     this.addChild(box);

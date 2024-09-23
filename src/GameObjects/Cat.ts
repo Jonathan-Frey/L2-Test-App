@@ -5,10 +5,13 @@ import {
   Vector2D,
 } from "jf-canvas-game-engine";
 import CatNecklace from "./CatNecklace";
+import { Bullet } from "./Bullet";
 
 export default class Cat extends CollisionBody {
   #name: string;
   #color: string | CanvasPattern | CanvasGradient;
+  #width: number = 50;
+  #height: number = 50;
   #left: boolean = false;
   #up: boolean = false;
   #right: boolean = false;
@@ -20,22 +23,47 @@ export default class Cat extends CollisionBody {
     name: string,
     color: string | CanvasPattern | CanvasGradient
   ) {
-    super(position, new RectangleCollisionShape(new Vector2D(0, 0), 50, 50));
+    const width = 50;
+    const height = 50;
+    super(
+      position,
+      new RectangleCollisionShape(
+        new Vector2D(-width / 2, -height / 2),
+        width,
+        height
+      )
+    );
     this.#name = name;
     this.#color = color;
 
+    document.querySelector("canvas")!.addEventListener("click", (e) => {
+      const clickPosition = new Vector2D(
+        e.clientX -
+          document.querySelector("canvas")!.getBoundingClientRect().left,
+        e.clientY -
+          document.querySelector("canvas")!.getBoundingClientRect().top
+      ).add(
+        CameraContext.getInstance().getCamera()?.position || new Vector2D(0, 0)
+      );
+      const direction = clickPosition.subtract(this.globalPosition).normalize();
+      console.log(
+        `${this.#name} shoots in direction ${direction.x}, ${direction.y}`
+      );
+      this.addChild(new Bullet(direction.multiply(5), 500, direction, "black"));
+    });
+
     window.addEventListener("keydown", (e) => {
       switch (e.key) {
-        case "ArrowLeft":
+        case "a":
           this.#left = true;
           break;
-        case "ArrowUp":
+        case "w":
           this.#up = true;
           break;
-        case "ArrowRight":
+        case "d":
           this.#right = true;
           break;
-        case "ArrowDown":
+        case "s":
           this.#down = true;
           break;
         case " ":
@@ -48,22 +76,22 @@ export default class Cat extends CollisionBody {
 
     window.addEventListener("keyup", (e) => {
       switch (e.key) {
-        case "ArrowLeft":
+        case "a":
           this.#left = false;
           break;
-        case "ArrowUp":
+        case "w":
           this.#up = false;
           break;
-        case "ArrowRight":
+        case "d":
           this.#right = false;
           break;
-        case "ArrowDown":
+        case "s":
           this.#down = false;
           break;
       }
     });
 
-    this.addChild(new CatNecklace(new Vector2D(0, 20), "red"));
+    this.addChild(new CatNecklace(new Vector2D(0, -10), "red"));
   }
 
   process(delta: number) {
@@ -89,10 +117,21 @@ export default class Cat extends CollisionBody {
 
   render(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.#color;
-    ctx.fillRect(this.globalPosition.x, this.globalPosition.y, 50, 50);
+    ctx.fillRect(
+      this.globalPosition.x - this.#width / 2,
+      this.globalPosition.y - this.#height / 2,
+      this.#width,
+      this.#height
+    );
+    // draw position of the cat as a black dot
+    ctx.fillStyle = "black";
+    ctx.fillRect(this.globalPosition.x, this.globalPosition.y, 3, 3);
   }
 
   onCollision(other: CollisionBody) {
+    if (this.getAllChildren().includes(other)) {
+      return;
+    }
     super.onCollision(other);
   }
 }
