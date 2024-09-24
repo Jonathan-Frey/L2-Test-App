@@ -32,9 +32,4 @@ export default class PushableBox extends CollisionBody {
       this.#height
     );
   }
-
-  override onCollision(other: CollisionBody): void {
-    super.onCollision(other);
-    this.getParent()?.removeChild(this);
-  }
 }

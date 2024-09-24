@@ -46,10 +46,14 @@ export default class Cat extends CollisionBody {
         CameraContext.getInstance().getCamera()?.position || new Vector2D(0, 0)
       );
       const direction = clickPosition.subtract(this.globalPosition).normalize();
-      console.log(
-        `${this.#name} shoots in direction ${direction.x}, ${direction.y}`
+      this.getParent()?.addChild(
+        new Bullet(
+          this.position.add(direction.multiply(5)),
+          500,
+          direction,
+          "black"
+        )
       );
-      this.addChild(new Bullet(direction.multiply(5), 500, direction, "black"));
     });
 
     window.addEventListener("keydown", (e) => {
@@ -126,12 +130,5 @@ export default class Cat extends CollisionBody {
     // draw position of the cat as a black dot
     ctx.fillStyle = "black";
     ctx.fillRect(this.globalPosition.x, this.globalPosition.y, 3, 3);
-  }
-
-  onCollision(other: CollisionBody) {
-    if (this.getAllChildren().includes(other)) {
-      return;
-    }
-    super.onCollision(other);
   }
 }
