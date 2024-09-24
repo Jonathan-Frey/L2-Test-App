@@ -3,6 +3,7 @@ import {
   Vector2D,
   Area,
   RectangleCollisionShape,
+  CollisionLayers,
 } from "jf-canvas-game-engine";
 import Cat from "./Cat";
 
@@ -18,9 +19,13 @@ export class Bullet extends GameObject {
     color: string | CanvasPattern | CanvasGradient
   ) {
     super(position);
+    const collisionLayers = new CollisionLayers();
+    collisionLayers.setLayer(1, false);
+    collisionLayers.setLayer(2, true);
     this.#area = new Area(
       new Vector2D(0, 0),
-      new RectangleCollisionShape(new Vector2D(0, 0), 5, 5)
+      new RectangleCollisionShape(new Vector2D(0, 0), 5, 5),
+      collisionLayers
     );
     this.addChild(this.#area);
     this.#speed = speed;
