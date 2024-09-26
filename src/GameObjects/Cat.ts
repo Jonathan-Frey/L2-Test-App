@@ -1,8 +1,9 @@
 import {
-  CameraContext,
+  GameContext,
   CollisionBody,
   RectangleCollisionShape,
   Vector2D,
+  Camera,
 } from "jf-canvas-game-engine";
 import CatNecklace from "./CatNecklace";
 import { Bullet } from "./Bullet";
@@ -12,6 +13,7 @@ export default class Cat extends CollisionBody {
   #color: string | CanvasPattern | CanvasGradient;
   #width: number = 50;
   #height: number = 50;
+  #camera: Camera;
   #left: boolean = false;
   #up: boolean = false;
   #right: boolean = false;
@@ -35,26 +37,10 @@ export default class Cat extends CollisionBody {
     );
     this.#name = name;
     this.#color = color;
-
-    document.querySelector("canvas")!.addEventListener("click", (e) => {
-      const clickPosition = new Vector2D(
-        e.clientX -
-          document.querySelector("canvas")!.getBoundingClientRect().left,
-        e.clientY -
-          document.querySelector("canvas")!.getBoundingClientRect().top
-      ).add(
-        CameraContext.getInstance().getCamera()?.position || new Vector2D(0, 0)
-      );
-      const direction = clickPosition.subtract(this.globalPosition).normalize();
-      this.getParent()?.addChild(
-        new Bullet(
-          this.position.add(direction.multiply(5)),
-          500,
-          direction,
-          "black"
-        )
-      );
-    });
+    this.#camera = new Camera(new Vector2D(0, 0));
+    this.addChild(this.#camera);
+    GameContext.getInstance().setActiveCamera(this.#camera);
+    this.addChild(new CatNecklace(new Vector2D(0, -10), "red"));
 
     window.addEventListener("keydown", (e) => {
       switch (e.key) {
@@ -94,11 +80,26 @@ export default class Cat extends CollisionBody {
           break;
       }
     });
-
-    this.addChild(new CatNecklace(new Vector2D(0, -10), "red"));
   }
 
   process(delta: number) {
+    if (GameContext.getInstance().isMouseClicked()) {
+      const clickPosition =
+        GameContext.getInstance().getClickData()?.globalPosition;
+      if (clickPosition) {
+        const direction = clickPosition
+          .subtract(this.globalPosition)
+          .normalize();
+        this.getParent()?.addChild(
+          new Bullet(
+            this.position.add(direction.multiply(5)),
+            500,
+            direction,
+            "black"
+          )
+        );
+      }
+    }
     const speed = 1000;
     if (this.#up) {
       this.#velocity = this.#velocity.add(new Vector2D(0, -speed));
@@ -114,8 +115,6 @@ export default class Cat extends CollisionBody {
     }
 
     this.position = this.position.add(this.#velocity.multiply(delta / 1000));
-    const camera = CameraContext.getInstance().getCamera();
-    camera?.centerOn(this.globalPosition);
     this.#velocity = new Vector2D(0, 0);
   }
 

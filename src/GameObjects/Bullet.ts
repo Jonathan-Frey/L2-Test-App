@@ -12,6 +12,7 @@ export class Bullet extends GameObject {
   #speed: number;
   #direction: Vector2D;
   #color: string | CanvasPattern | CanvasGradient;
+  #lifeTimeInMilliseconds: number = 1000;
   constructor(
     position: Vector2D,
     speed: number,
@@ -39,6 +40,10 @@ export class Bullet extends GameObject {
   }
 
   override process(delta: number): void {
+    this.#lifeTimeInMilliseconds -= delta;
+    if (this.#lifeTimeInMilliseconds <= 0) {
+      this.getParent()?.removeChild(this);
+    }
     this.position = this.position.add(
       this.#direction.multiply((delta / 1000) * this.#speed)
     );
@@ -47,6 +52,7 @@ export class Bullet extends GameObject {
       if (body instanceof Bullet) return;
       if (body instanceof Cat) return;
       body.getParent()?.removeChild(body);
+      this.getParent()?.removeChild(this);
     });
   }
 }
