@@ -48,9 +48,7 @@ export class Bullet extends GameObject {
       this.#direction.multiply((delta / 1000) * this.#speed)
     );
     this.#area.getCollidingBodies().forEach((body) => {
-      console.log("Collided with: ", body);
       if (body instanceof Bullet) return;
-      if (body instanceof Cat) return;
       body.getParent()?.removeChild(body);
       this.getParent()?.removeChild(this);
     });

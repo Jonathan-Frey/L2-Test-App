@@ -7,6 +7,7 @@ import {
 } from "jf-canvas-game-engine";
 import CatNecklace from "./CatNecklace";
 import { Bullet } from "./Bullet";
+import { Level2 } from "../scenes/Level2";
 
 export default class Cat extends CollisionBody {
   #name: string;
@@ -14,10 +15,6 @@ export default class Cat extends CollisionBody {
   #width: number = 50;
   #height: number = 50;
   #camera: Camera;
-  #left: boolean = false;
-  #up: boolean = false;
-  #right: boolean = false;
-  #down: boolean = false;
   #velocity = new Vector2D(0, 0);
 
   constructor(
@@ -41,48 +38,12 @@ export default class Cat extends CollisionBody {
     this.addChild(this.#camera);
     GameContext.getInstance().setActiveCamera(this.#camera);
     this.addChild(new CatNecklace(new Vector2D(0, -10), "red"));
-
-    window.addEventListener("keydown", (e) => {
-      switch (e.key) {
-        case "a":
-          this.#left = true;
-          break;
-        case "w":
-          this.#up = true;
-          break;
-        case "d":
-          this.#right = true;
-          break;
-        case "s":
-          this.#down = true;
-          break;
-        case " ":
-          console.log(`${this.#name} meows`);
-          break;
-        default:
-          break;
-      }
-    });
-
-    window.addEventListener("keyup", (e) => {
-      switch (e.key) {
-        case "a":
-          this.#left = false;
-          break;
-        case "w":
-          this.#up = false;
-          break;
-        case "d":
-          this.#right = false;
-          break;
-        case "s":
-          this.#down = false;
-          break;
-      }
-    });
   }
 
   process(delta: number) {
+    if (GameContext.getInstance().isJustPressed("Enter")) {
+      GameContext.getInstance().navigateToScene(new Level2());
+    }
     if (GameContext.getInstance().isMouseClicked()) {
       const clickPosition =
         GameContext.getInstance().getClickData()?.globalPosition;
@@ -100,17 +61,22 @@ export default class Cat extends CollisionBody {
         );
       }
     }
+    this.#handleMovement(delta);
+  }
+
+  #handleMovement(delta: number) {
+    const gameContext = GameContext.getInstance();
     const speed = 1000;
-    if (this.#up) {
+    if (gameContext.isPressed("w")) {
       this.#velocity = this.#velocity.add(new Vector2D(0, -speed));
     }
-    if (this.#down) {
+    if (gameContext.isPressed("s")) {
       this.#velocity = this.#velocity.add(new Vector2D(0, speed));
     }
-    if (this.#left) {
+    if (gameContext.isPressed("a")) {
       this.#velocity = this.#velocity.add(new Vector2D(-speed, 0));
     }
-    if (this.#right) {
+    if (gameContext.isPressed("d")) {
       this.#velocity = this.#velocity.add(new Vector2D(speed, 0));
     }
 
